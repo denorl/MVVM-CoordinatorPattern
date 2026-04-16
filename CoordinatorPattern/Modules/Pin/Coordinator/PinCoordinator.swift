@@ -11,27 +11,33 @@ protocol PinCoordinatorOutput {
 }
 
 final class PinCoordinator: BaseCoordinator, PinCoordinatorOutput {
+    
+    private var pendingFirstPin: [Int]?
+    
+    #warning("rename to finish coordinator to understand better its purpose")
+    //MARK: - Finish Flow publisher
     private let finishFlowSubject = PassthroughSubject<Void, Never>()
     var finishFlow: AnyPublisher<Void, Never> {
         finishFlowSubject.eraseToAnyPublisher()
     }
     
+    //MARK: - Dependencies
     private let router: Routable
     private let factory: PinFactoryProtocol
-    private var mode: PinFlowMode
-    private var pendingFirstPin: [Int]?
-    
-    init(router: Routable, factory: PinFactoryProtocol, mode: PinFlowMode) {
+    private var route: Route.Pin
+        
+    //MARK: - Initializer
+    init(router: Routable, factory: PinFactoryProtocol, route: Route.Pin) {
         self.router = router
         self.factory = factory
-        self.mode = mode
+        self.route = route
     }
     
 }
 
 extension PinCoordinator: Coordinatable {
     func start() {
-        switch mode {
+        switch route {
         case .createPin:
             performCreatePinFlow()
         case .enterPin:
@@ -40,11 +46,11 @@ extension PinCoordinator: Coordinatable {
     }
 }
 
-//MARK: - Private Methods
+//MARK: - Flows Assembly
 private extension PinCoordinator {
+    
     func performCreatePinFlow() {
-        let viewModel = factory.makeCreatePinViewModel()
-        let view = factory.makeCreatePinView(for: viewModel)
+        let (viewModel, view) = factory.makeCreatePinScene()
         
         viewModel.showConfirmPin
             .sink { [weak self] firstPin in
@@ -53,30 +59,29 @@ private extension PinCoordinator {
             }
             .store(in: &cancellables)
         
-        router.setRootModule(view, hideNavBar: false)
+        router.push(view, animated: true, hideBackButton: true)
     }
     
     func performConfirmPinFlow() {
         guard let firstPin = pendingFirstPin else { return }
         
-        let viewModel = factory.makeConfirmPinViewModel(firstPin: firstPin)
-        let view = factory.makeConfirmPinView(for: viewModel)
-        
+        let (viewModel, view) = factory.makeConfirmPinScene(firstPin: firstPin)
+
         bindFinish(from: viewModel) { [weak self] in
             self?.finishFlowSubject.send()
         }
         
-        router.push(view, animated: true)
+        router.push(view, animated: true, hideBackButton: false)
     }
     
     func performEnterPinFlow() {
-        let viewModel = factory.makeEnterPinViewModel()
-        let view = factory.makeEnterPinView(for: viewModel)
-        
+        let (viewModel, view) = factory.makeEnterPinScene()
+
         bindFinish(from: viewModel) { [weak self] in
             self?.finishFlowSubject.send()
         }
         
         router.setRootModule(view, hideNavBar: false)
     }
+    
 }

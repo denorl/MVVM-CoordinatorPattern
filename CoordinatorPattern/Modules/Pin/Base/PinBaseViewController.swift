@@ -84,6 +84,7 @@ private extension PinBaseViewController {
             make.height.equalTo(view.snp.height).multipliedBy(0.42)
         }
     }
+    
 }
 
 //MARK: - VM Binding

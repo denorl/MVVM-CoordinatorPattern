@@ -5,37 +5,45 @@
 //  Created by Denis's MacBook on 11/4/26.
 //
 
+import Foundation
+
 enum UserDefaultsKeys {
-    case token
-    case isFirstAccess
-    case hasPinCode
-    case currentUserId
-    case pinCodeHash
+    case token, isFirstAccess, hasPinCode, currentUserId
+    
+    static func pinCodeKey(for userId: String) -> String {
+        return "pinCodeHash.\(userId)"
+    }
     
     var key: String {
         switch self {
-        case .token: "token"
-        case .isFirstAccess: "isFirstAccess"
-        case .hasPinCode: "hasPinCode"
-        case .currentUserId: "currentUserId"
-        case .pinCodeHash: "pinCodeHash"
+        case .token: return "token"
+        case .isFirstAccess: return "isFirstAccess"
+        case .hasPinCode: return "hasPinCode"
+        case .currentUserId: return "currentUserId"
         }
     }
 }
-
 enum UserDefaultsStorage {
+    
     @UserDefault(key: UserDefaultsKeys.token.key, defaultValue: nil)
     static var token: String?
-    
-    @UserDefault(key: UserDefaultsKeys.isFirstAccess.key, defaultValue: true)
-    static var isFirstAccess: Bool
-    
-    @UserDefault(key: UserDefaultsKeys.hasPinCode.key, defaultValue: false)
-    static var hasPinCode: Bool
     
     @UserDefault(key: UserDefaultsKeys.currentUserId.key, defaultValue: nil)
     static var currentUserIdentifier: String?
     
-    @UserDefault(key: UserDefaultsKeys.pinCodeHash.key, defaultValue: nil)
-    static var pinCodeHash: String?
+    static var pinCodeHash: String? {
+        get {
+            guard let id = currentUserIdentifier else { return nil }
+            return UserDefaults.standard.string(forKey: UserDefaultsKeys.pinCodeKey(for: id))
+        }
+        set {
+            guard let id = currentUserIdentifier else { return }
+            if let newValue = newValue {
+                UserDefaults.standard.set(newValue, forKey: UserDefaultsKeys.pinCodeKey(for: id))
+            } else {
+                UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.pinCodeKey(for: id))
+            }
+        }
+    }
+    
 }

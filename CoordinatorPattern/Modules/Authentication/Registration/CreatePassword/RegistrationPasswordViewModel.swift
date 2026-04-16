@@ -9,6 +9,11 @@ import Combine
 
 final class RegistrationPasswordViewModel: AuthenticationViewModel {
     
+    private let showCreatePinSubject = PassthroughSubject<Void, Never>()
+    var showCreatePin: AnyPublisher<Void, Never> {
+        showCreatePinSubject.eraseToAnyPublisher()
+    }
+    
     //MARK: - Dependencies
     private let login: String
     private let authManager: AuthenticationManagerProtocol
@@ -16,8 +21,6 @@ final class RegistrationPasswordViewModel: AuthenticationViewModel {
     //MARK: - Published Properties
     @Published var passwordInput = ""
     @Published private(set) var passwordError: String? = nil
-    
-    @Published var instructionText = ""
     @Published var passwordFieldBorderState: AuthTextField.ValidationState = .neutral
     
     init(login: String, authManager: AuthenticationManagerProtocol) {

@@ -19,25 +19,24 @@ protocol AuthenticationCoordinatorOutput {
 
 final class AuthenticationCoordinator: BaseCoordinator, AuthenticationCoordinatorOutput {
     
+    private var pendingRegistrationData = PendingAuthData()
+    
+    //MARK: - AuthenticationCoordinatorOutput
     private let finishFlowSubject = PassthroughSubject<AuthenticationResult, Never>()
     var finishFlow: AnyPublisher<AuthenticationResult, Never> {
         finishFlowSubject.eraseToAnyPublisher()
     }
-    private var pendingRegistrationData: String?
-    private var pendingFirstPin: [Int]?
-    
+        
+    //MARK: - Dependencies
     private let router: Routable
     private let authFactory: AuthenticationFactoryProtocol
-    private let pinFactory: PinFactoryProtocol
-    private var mode: AuthFlowMode
     
-    init(router: Routable, authFactory: AuthenticationFactoryProtocol, pinFactory: PinFactoryProtocol, mode: AuthFlowMode) {
+    //MARK: - Initializer
+    init(router: Routable, authFactory: AuthenticationFactoryProtocol) {
         self.authFactory = authFactory
-        self.pinFactory = pinFactory
         self.router = router
-        self.mode = mode
+        
         super.init()
-        setupPopListener()
     }
     
 }
@@ -45,20 +44,8 @@ final class AuthenticationCoordinator: BaseCoordinator, AuthenticationCoordinato
 //MARK: - Coordinatable
 extension AuthenticationCoordinator: Coordinatable {
     func start() {
-        switch mode {
-        case .login:
-            performLoginFlow()
-        case .registrationLogin:
-            performRegistrationLoginFlow()
-        case .registrationPassword:
-            performRegistrationPasswordFlow()
-        case .createPin:
-            performCreatePinFlow()
-        case .confirmPin:
-            performConfirmPinFlow()
-        case .enterPin:
-            performEnterPinFlow()
-        }
+        setupPopListener()
+        performLoginFlow()
     }
 }
 
@@ -66,38 +53,28 @@ extension AuthenticationCoordinator: Coordinatable {
 private extension AuthenticationCoordinator {
     
     func performLoginFlow() {
-        let viewModel = authFactory.makeLoginViewModel()
-        let view = authFactory.makeLoginView(for: viewModel)
-        
+        let (viewModel, view) = authFactory.makeLoginScene()
+
         viewModel.showRegistration
             .sink { [weak self] in
-                self?.mode = .registrationLogin
-                self?.start()
+                self?.performRegistrationLoginFlow()
             }
             .store(in: &cancellables)
         
         bindFinish(from: viewModel) { [weak self] in
-            if Session.hasPinCode {
-                self?.mode = .enterPin
-                self?.start()
-            } else {
-                self?.mode = .createPin
-                self?.start()
-            }
+            self?.finishFlowSubject.send(.loginCompleted)
         }
     
         router.setRootModule(view, hideNavBar: false)
     }
     
     func performRegistrationLoginFlow() {
-        let viewModel = authFactory.makeRegistrationLoginViewModel()
-        let view = authFactory.makeRegistrationLoginView(for: viewModel)
+        let (viewModel, view) = authFactory.makeRegistrationLoginScene()
         
         viewModel.showCreatePassword
             .sink { [weak self] login in
-                self?.pendingRegistrationData = login
-                self?.mode = .registrationPassword
-                self?.start()
+                self?.pendingRegistrationData.pendingLogin = login
+                self?.performRegistrationPasswordFlow()
             }
             .store(in: &cancellables)
         
@@ -105,53 +82,11 @@ private extension AuthenticationCoordinator {
     }
     
     func performRegistrationPasswordFlow() {
-        guard let login = pendingRegistrationData else { return }
-        
-        let viewModel = authFactory.makeRegistrationPasswordViewModel(login: login)
-        let view = authFactory.makeRegistrationPasswordView(for: viewModel)
-        
-        bindFinish(from: viewModel) { [weak self] in
-            self?.mode = .createPin
-            self?.start()
-        }
-        
-        router.push(view, animated: true)
-    }
-    
-    func performCreatePinFlow() {
-        let viewModel = pinFactory.makeCreatePinViewModel()
-        let view = pinFactory.makeCreatePinView(for: viewModel)
-        
-        viewModel.showConfirmPin
-            .sink { [weak self] firstPin in
-                self?.pendingFirstPin = firstPin
-                self?.mode = .confirmPin
-                self?.start()
-            }
-            .store(in: &cancellables)
-        
-        router.push(view, animated: true)
-    }
-    
-    func performConfirmPinFlow() {
-        guard let firstPin = pendingFirstPin else { return }
-        
-        let viewModel = pinFactory.makeConfirmPinViewModel(firstPin: firstPin)
-        let view = pinFactory.makeConfirmPinView(for: viewModel)
+        guard let login = pendingRegistrationData.pendingLogin else { return }
+        let (viewModel, view) = authFactory.makeRegistrationPasswordScene(login: login)
         
         bindFinish(from: viewModel) { [weak self] in
             self?.finishFlowSubject.send(.registrationCompleted)
-        }
-        
-        router.push(view, animated: true)
-    }
-    
-    func performEnterPinFlow() {
-        let viewModel = pinFactory.makeEnterPinViewModel()
-        let view = pinFactory.makeEnterPinView(for: viewModel)
-        
-        bindFinish(from: viewModel) { [weak self] in
-            self?.finishFlowSubject.send(.loginCompleted)
         }
         
         router.push(view, animated: true)
@@ -171,10 +106,11 @@ private extension AuthenticationCoordinator {
     }
     
     func handlePop(_ controller: UIViewController) {
-        if controller is RegistrationLoginViewController {
-            mode = .login
-        } else if controller is RegistrationPasswordViewController {
-            mode = .registrationLogin
+        guard let controller = controller as? RouteIdentifiable else { return }
+        switch controller.route {
+        case .registrationLogin:
+            pendingRegistrationData.pendingLogin = nil
+        default: break
         }
     }
     

@@ -9,7 +9,9 @@ import UIKit
 import SnapKit
 import Combine
 
-final class RegistrationPasswordViewController: AuthenticationViewController<RegistrationPasswordViewModel> {
+final class RegistrationPasswordViewController: AuthenticationViewController<RegistrationPasswordViewModel>, RouteIdentifiable {
+    
+    var route: Route.Authentication = .registrationPassword
     
     //MARK: - UI Properties
     private let instructionLabel = UILabel()
@@ -27,6 +29,8 @@ final class RegistrationPasswordViewController: AuthenticationViewController<Reg
     
     //MARK: - SetupUI
     private func setupUI() {
+        navigationItem.title = "Registration"
+        
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.spacing = 20
@@ -36,6 +40,7 @@ final class RegistrationPasswordViewController: AuthenticationViewController<Reg
         ])
         
         instructionLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        instructionLabel.text = "Create your password."
     }
     
     //MARK: - Constraints Configuration
@@ -64,13 +69,6 @@ final class RegistrationPasswordViewController: AuthenticationViewController<Reg
 //MARK: - VM Binding
 private extension RegistrationPasswordViewController {
     func bindViewModel() {
-        viewModel.$instructionText
-            .sink { [weak self] instrutionText in
-                self?.instructionLabel.text = instrutionText
-            }
-            .store(in: &cancellables)
-
-        
         bindText(from: validatedPasswordField, to: \.passwordInput)
         
         bindInputField(

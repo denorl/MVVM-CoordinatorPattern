@@ -19,6 +19,7 @@ final class EnterPinViewModel: PinBaseViewModel {
 
 //MARK: - Private Methods
 private extension EnterPinViewModel {
+    
     func bindPinEntry() {
         onPinEntered
             .sink { [weak self] digits in
@@ -29,11 +30,12 @@ private extension EnterPinViewModel {
     
     func validatePin(_ digits: [Int]) {
         if PinManager.validatePin(digits) {
-            Session.isPinValidated = true
+            Session.shared.isFullAccessGranted = true
             onFinishSubject.send()
         } else {
             errorMessage = "Incorrect PIN. Try again."
             resetPin()
         }
     }
+    
 }

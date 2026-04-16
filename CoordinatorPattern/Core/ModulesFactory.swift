@@ -14,28 +14,22 @@ final class ModulesFactory {
 // MARK:- AuthenticationFactoryProtocol
 extension ModulesFactory: AuthenticationFactoryProtocol {
     
-    func makeLoginView(for viewModel: LoginViewModel) -> UIViewController {
-        return LoginViewController(viewModel: viewModel)
+    func makeLoginScene() -> (vm: LoginViewModel, vc: UIViewController) {
+        let viewModel = LoginViewModel(authManager: mockAuthManager)
+        let view = LoginViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
     
-    func makeLoginViewModel() -> LoginViewModel {
-        return LoginViewModel(authManager: mockAuthManager)
+    func makeRegistrationLoginScene() -> (vm: RegistrationLoginViewModel, vc: UIViewController) {
+        let viewModel = RegistrationLoginViewModel()
+        let view = RegistrationLoginViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
-    
-    func makeRegistrationLoginView(for viewModel: RegistrationLoginViewModel) -> UIViewController {
-        return RegistrationLoginViewController(viewModel: viewModel)
-    }
-    
-    func makeRegistrationLoginViewModel() -> RegistrationLoginViewModel {
-        return RegistrationLoginViewModel()
-    }
-    
-    func makeRegistrationPasswordView(for viewModel: RegistrationPasswordViewModel) -> UIViewController {
-        return RegistrationPasswordViewController(viewModel: viewModel)
-    }
-    
-    func makeRegistrationPasswordViewModel(login: String) -> RegistrationPasswordViewModel {
-        return RegistrationPasswordViewModel(login: login, authManager: mockAuthManager)
+   
+    func makeRegistrationPasswordScene(login: String) -> (vm: RegistrationPasswordViewModel, vc: UIViewController) {
+        let viewModel = RegistrationPasswordViewModel(login: login, authManager: mockAuthManager)
+        let view = RegistrationPasswordViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
     
 }
@@ -43,39 +37,31 @@ extension ModulesFactory: AuthenticationFactoryProtocol {
 //MARK: - PinFactoryProtocol
 extension ModulesFactory: PinFactoryProtocol {
     
-    func makeCreatePinViewModel() -> CreatePinViewModel {
-        return CreatePinViewModel()
+    func makeCreatePinScene() -> (vm: CreatePinViewModel, vc: UIViewController) {
+        let viewModel = CreatePinViewModel()
+        let view = CreatePinViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
     
-    func makeCreatePinView(for viewModel: CreatePinViewModel) -> UIViewController {
-        return CreatePinViewController(viewModel: viewModel)
+    func makeConfirmPinScene(firstPin: [Int]) -> (vm: ConfirmPinViewModel, vc: UIViewController) {
+        let viewModel = ConfirmPinViewModel(firstPin: firstPin)
+        let view = ConfirmPinViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
     
-    func makeConfirmPinViewModel(firstPin: [Int]) -> ConfirmPinViewModel {
-        return ConfirmPinViewModel(firstPin: firstPin)
-    }
-    
-    func makeConfirmPinView(for viewModel: ConfirmPinViewModel) -> UIViewController {
-        return ConfirmPinViewController(viewModel: viewModel)
-    }
-    
-    func makeEnterPinViewModel() -> EnterPinViewModel {
-        return EnterPinViewModel()
-    }
-    
-    func makeEnterPinView(for viewModel: EnterPinViewModel) -> UIViewController {
-        return EnterPinViewController(viewModel: viewModel)
+    func makeEnterPinScene() -> (vm: EnterPinViewModel, vc: UIViewController) {
+        let viewModel = EnterPinViewModel()
+        let view = EnterPinViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
     
 }
 
+// MARK: - MainFactoryProtocol
 extension ModulesFactory: MainFactoryProtocol {
-    func makeMainViewModel() -> MainViewModel {
-        return MainViewModel(authManager: mockAuthManager)
-    }
-    
-    func makeMainView(with viewModel: MainViewModel) -> UIViewController {
-        return MainViewController(viewModel: viewModel)
+    func makeMainModule() -> (vm: MainViewModel, vc: UIViewController) {
+        let viewModel = MainViewModel(authManager: mockAuthManager)
+        let view = MainViewController(viewModel: viewModel)
+        return (viewModel, view)
     }
 }
-

@@ -42,7 +42,6 @@ final class MockAuthenticationManager: AuthenticationManagerProtocol {
         try await simulateNetworkDelay()
         
         let storageKey = generateStorageKey(for: identifier)
-        print(storageKey)
         let savedPassword = UserDefaults.standard.string(forKey: storageKey)
         
         guard savedPassword == password else {
@@ -72,20 +71,16 @@ final class MockAuthenticationManager: AuthenticationManagerProtocol {
         )
     }
     
+    #warning("disable button to prevent it being tappe")
     func signOut() async throws {
         try await simulateNetworkDelay()
-        deleteSession()
+        Session.shared.signOut()
     }
     
     //MARK: - Helper methods
     private func createSession(token: String, identifier: AuthIdentifier) {
         UserDefaultsStorage.currentUserIdentifier = identifier.value
         UserDefaultsStorage.token = token
-    }
-    
-    private func deleteSession() {
-        UserDefaultsStorage.currentUserIdentifier = nil
-        UserDefaultsStorage.token = nil
     }
     
     private func generateStorageKey(for identifier: AuthIdentifier) -> String {

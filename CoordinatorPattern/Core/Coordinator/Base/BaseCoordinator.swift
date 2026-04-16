@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 class BaseCoordinator {
-    var childCoordinators: [Coordinatable] = []
+    private(set) var childCoordinators: [Coordinatable] = []
     var cancellables = Set<AnyCancellable>()
     
     func addChildCoordinator(_ coordinator: Coordinatable) {
@@ -23,6 +23,7 @@ class BaseCoordinator {
     }
     
     func bindFinish(from viewModel: CoordinatableViewModel, action: @escaping () -> Void) {
+        print("got finish publisher from \(viewModel) ")
         viewModel.onFinish
             .first()
             .receive(on: DispatchQueue.main)

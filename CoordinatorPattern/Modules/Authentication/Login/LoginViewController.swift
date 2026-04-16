@@ -9,8 +9,10 @@ import UIKit
 import SnapKit
 import Combine
 
-
-final class LoginViewController: AuthenticationViewController<LoginViewModel> {
+#warning("не подписывать под базовый класс и вынести отдельно")
+final class LoginViewController: AuthenticationViewController<LoginViewModel>, RouteIdentifiable {
+    
+    var route: Route.Authentication = .login
     
     //MARK: - UI Properties
     private let logoImageView = UIImageView()

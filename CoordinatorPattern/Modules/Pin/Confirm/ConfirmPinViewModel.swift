@@ -33,7 +33,7 @@ private extension ConfirmPinViewModel {
     func validatePin(_ digits: [Int]) {
         if digits == firstPin {
             PinManager.savePin(digits)
-            Session.isPinValidated = true
+            Session.shared.isFullAccessGranted = true
             onFinishSubject.send()
         } else {
             errorMessage = "PINs do not match. Try again."

@@ -9,13 +9,18 @@ import Combine
 
 final class LoginViewModel: AuthenticationViewModel {
     
-    //MARK: - Finish Flow publishers
+    private let authManager: AuthenticationManagerProtocol
+    
+    //MARK: - Publishers
     private let showRegistrationSubject = PassthroughSubject<Void, Never>()
     var showRegistration: AnyPublisher<Void, Never> {
         showRegistrationSubject.eraseToAnyPublisher()
     }
     
-    private let authManager: AuthenticationManagerProtocol
+    private let showEnterPinSubject = PassthroughSubject<Void, Never>()
+    var showEnterPin: AnyPublisher<Void, Never> {
+        showEnterPinSubject.eraseToAnyPublisher()
+    }
     
     //MARK: - Published Properties
     @Published private(set) var loginBorderState: AuthTextField.ValidationState = .neutral

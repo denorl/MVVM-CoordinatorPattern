@@ -30,8 +30,7 @@ final class MainCoordinator: BaseCoordinator, MainCoordinatorOutput {
 
 extension MainCoordinator: Coordinatable {
     func start() {
-        let viewModel = factory.makeMainViewModel()
-        let view = factory.makeMainView(with: viewModel)
+        let (viewModel, view) = factory.makeMainModule()
         
         viewModel.onFinish
             .first()

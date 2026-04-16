@@ -7,58 +7,42 @@
 
 import Combine
 
-enum AuthFlowMode {
-    case login
-    case registrationLogin
-    case registrationPassword
-    case createPin
-    case confirmPin
-    case enterPin
-}
-
-enum PinFlowMode {
-    case enterPin
-    case createPin
-}
-
 fileprivate enum LaunchInstructor {
-    case authentication(mode: AuthFlowMode)
+    case authentication
     case main
-    case pin(mode: PinFlowMode)
+    case pin(mode: Route.Pin)
     
-    static func setup() -> LaunchInstructor {
-        guard Session.isAuthorized else {
-            return .authentication(mode: .login)
-        }
-        
-        if Session.hasPinCode {
-            return Session.isPinValidated ? .main : .pin(mode: .enterPin)
-        } else {
-            return .pin(mode: .createPin)
-        }
+    static func resolve(from session: SessionProvider) -> LaunchInstructor {
+        guard session.isAuthorized else { return .authentication }
+        guard session.hasPinCode  else { return .pin(mode: .createPin) }
+        return session.isFullAccessGranted ? .main : .pin(mode: .enterPin)
     }
 }
 
 final class AppCoordinator: BaseCoordinator {
-    private let router: Routable
-    private let factory: CoordinatorFactoryProtocol
     
-    init(router: Routable, factory: CoordinatorFactoryProtocol) {
+    private let router: Routable
+    private let factory: AppCoordinatorFactoryProtocol
+    private let session: SessionProvider
+    
+    init(router: Routable, factory: AppCoordinatorFactoryProtocol, session: SessionProvider = Session.shared) {
         self.router = router
         self.factory = factory
+        self.session = session
     }
     
     private var instructor: LaunchInstructor {
-        return LaunchInstructor.setup()
+        return LaunchInstructor.resolve(from: session)
     }
+    
 }
 
 //MARK: - Coordinatable
 extension AppCoordinator: Coordinatable {
     func start() {
         switch instructor {
-        case .authentication(let authMode):
-            performAuthenticationFlow(mode: authMode)
+        case .authentication:
+            performAuthenticationFlow()
         case .main:
             performMainFlow()
         case .pin(let pinMode):
@@ -69,8 +53,9 @@ extension AppCoordinator: Coordinatable {
 
 //MARK: - Flows Assembly
 private extension AppCoordinator {
-    func performAuthenticationFlow(mode: AuthFlowMode) {
-        let coordinator = factory.makeAuthenticationCoordinator(router: router, mode: mode)
+    
+    func performAuthenticationFlow() {
+        let coordinator = factory.makeAuthenticationCoordinator(router: router)
         coordinator.finishFlow
             .first()
             .sink { [weak self, weak coordinator] authResult in
@@ -83,8 +68,8 @@ private extension AppCoordinator {
         coordinator.start()
     }
     
-    func performPinFlow(mode: PinFlowMode) {
-        let coordinator = factory.makePinCoordinator(router: router, mode: mode)
+    func performPinFlow(route: Route.Pin) {
+        let coordinator = factory.makePinCoordinator(router: router, route: route)
         coordinator.finishFlow
             .first()
             .sink { [weak self] in
@@ -110,4 +95,5 @@ private extension AppCoordinator {
         addChildCoordinator(coordinator)
         coordinator.start()
     }
+    
 }

@@ -8,7 +8,9 @@ import UIKit
 import SnapKit
 import Combine
 
-final class RegistrationLoginViewController: AuthenticationViewController<RegistrationLoginViewModel> {
+final class RegistrationLoginViewController: AuthenticationViewController<RegistrationLoginViewModel>, RouteIdentifiable {
+    
+    var route: Route.Authentication = .registrationLogin
     
     //MARK: - UI Properties
     private let instructionLabel = UILabel()

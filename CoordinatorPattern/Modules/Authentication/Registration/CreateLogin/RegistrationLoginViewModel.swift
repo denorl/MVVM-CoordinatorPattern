@@ -16,19 +16,16 @@ final class RegistrationLoginViewModel: AuthenticationViewModel {
     }
     
     //MARK: - Published Properties
-    @Published private(set) var loginFieldBorderState: AuthTextField.ValidationState = .neutral
-    
     @Published var loginInput = ""
-    
     @Published private(set) var loginError: String? = nil
-    
+    @Published private(set) var loginFieldBorderState: AuthTextField.ValidationState = .neutral
     @Published private(set) var instructionText = ""
     
     override init() {
         super.init()
         bindContinueButtonState()
         setupLoginValidation()
-        updateInstructionText()
+        bindInstructionText()
     }
     
     //MARK: - Overriden Methods
@@ -61,7 +58,7 @@ extension RegistrationLoginViewModel: LoginValidatable {
 
 //MARK: - Private Methods
 private extension RegistrationLoginViewModel {
-    func updateInstructionText() {
+    func bindInstructionText() {
         $selectedAuthMethod
             .map { authMethod in
                 switch authMethod {

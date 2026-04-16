@@ -8,13 +8,8 @@
 import UIKit
 
 protocol AuthenticationFactoryProtocol {
-    func makeLoginView(for viewModel: LoginViewModel) -> UIViewController
-    func makeLoginViewModel() -> LoginViewModel
-    
-    func makeRegistrationLoginView(for viewModel: RegistrationLoginViewModel) -> UIViewController
-    func makeRegistrationLoginViewModel() -> RegistrationLoginViewModel
-    
-    func makeRegistrationPasswordView(for viewModel: RegistrationPasswordViewModel) -> UIViewController
-    func makeRegistrationPasswordViewModel(login: String) -> RegistrationPasswordViewModel
+    func makeLoginScene() -> (vm: LoginViewModel, vc: UIViewController)
+    func makeRegistrationLoginScene() -> (vm: RegistrationLoginViewModel, vc: UIViewController)
+    func makeRegistrationPasswordScene(login: String) -> (vm: RegistrationPasswordViewModel, vc: UIViewController)
 }
 

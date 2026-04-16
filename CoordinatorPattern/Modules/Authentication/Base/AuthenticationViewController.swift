@@ -8,6 +8,10 @@ import UIKit
 import SnapKit
 import Combine
 
+protocol RouteIdentifiable {
+    var route: Route.Authentication { get }
+}
+
 class AuthenticationViewController<ViewModel: AuthenticationViewModel>: UIViewController, UIGestureRecognizerDelegate {
     
     var cancellables = Set<AnyCancellable>()
@@ -81,7 +85,8 @@ class AuthenticationViewController<ViewModel: AuthenticationViewModel>: UIViewCo
     @objc func handleKeyboard(notification: Notification) {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue,
-              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double
+        else { return }
         
         let isShowing = notification.name == UIResponder.keyboardWillShowNotification
         let keyboardHeight = keyboardFrame.cgRectValue.height
@@ -119,6 +124,7 @@ class AuthenticationViewController<ViewModel: AuthenticationViewModel>: UIViewCo
 
 //MARK: - Private Methods
 private extension AuthenticationViewController {
+    
     func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -131,7 +137,6 @@ private extension AuthenticationViewController {
         tap.delegate = self
         view.addGestureRecognizer(tap)
     }
-    
     
 }
 

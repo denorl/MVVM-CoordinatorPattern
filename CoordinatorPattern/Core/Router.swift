@@ -8,19 +8,21 @@
 import UIKit
 import Combine
 
+#warning("все для рутов в одну папку")
 final class Router: NSObject {
-    private weak var rootController: UINavigationController?
+    private var rootController = UINavigationController()
     
+    private let window: UIWindow
     private let popSubject = PassthroughSubject<UIViewController, Never>()
     var popPublisher: AnyPublisher<UIViewController, Never> {
         popSubject.eraseToAnyPublisher()
     }
     
-    init(rootController: UINavigationController) {
-        self.rootController = rootController
+    init(window: UIWindow) {
+        self.window = window
         super.init()
-
-        self.rootController?.delegate = self
+        assignRootController()
+        self.rootController.delegate = self
     }
     
     var toPresent: UIViewController? {
@@ -45,36 +47,35 @@ extension Router: UINavigationControllerDelegate {
 
 //MARK: - Routable
 extension Router: Routable {
+    func assignRootController() {
+        window.rootViewController = rootController
+        window.makeKeyAndVisible()
+    }
+    
     func present(_ module: (any Presentable)?, animated: Bool) {}
     
-    func push(_ module: (any Presentable)?, animated: Bool) {
+    func push(_ module: (any Presentable)?, animated: Bool, hideBackButton: Bool) {
         guard let controller = module?.toPresent else { return }
-        guard !(rootController?.viewControllers.contains(controller) ?? false) else { return }
+        guard !(rootController.viewControllers.contains(controller)) else { return }
         
-        rootController?.pushViewController(controller, animated: animated)
+        rootController.pushViewController(controller, animated: animated)
+        controller.navigationItem.hidesBackButton = hideBackButton
     }
     
     func setRootModule(_ module: (any Presentable)?, hideNavBar: Bool) {
         guard let controller = module?.toPresent else { return }
         
-        rootController?.setViewControllers([controller], animated: false)
-        rootController?.isNavigationBarHidden = hideNavBar
+        rootController.setViewControllers([controller], animated: false)
+        rootController.isNavigationBarHidden = hideNavBar
         
-        let window = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-        
-        if let window = window {
-            UIView.transition(with: window,
-                              duration: 0.5,
-                              options: .transitionFlipFromRight,
-                              animations: nil)
-        }
+        UIView.transition(with: window,
+                          duration: 0.5,
+                          options: .transitionFlipFromRight,
+                          animations: nil)
     }
     
     func popModule(animated: Bool) {
-        rootController?.popViewController(animated: true)
+        rootController.popViewController(animated: true)
     }
     
     func dismissModule(animated: Bool, completion: (() -> Void)?) {}

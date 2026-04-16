@@ -7,12 +7,7 @@
 import UIKit
 
 protocol PinFactoryProtocol {
-    func makeCreatePinViewModel() -> CreatePinViewModel
-    func makeCreatePinView(for viewModel: CreatePinViewModel) -> UIViewController
-    
-    func makeConfirmPinViewModel(firstPin: [Int]) -> ConfirmPinViewModel
-    func makeConfirmPinView(for viewModel: ConfirmPinViewModel) -> UIViewController
-    
-    func makeEnterPinViewModel() -> EnterPinViewModel
-    func makeEnterPinView(for viewModel: EnterPinViewModel) -> UIViewController
+    func makeCreatePinScene() -> (vm: CreatePinViewModel, vc: UIViewController)
+    func makeConfirmPinScene(firstPin: [Int]) -> (vm: ConfirmPinViewModel, vc: UIViewController)
+    func makeEnterPinScene() -> (vm: EnterPinViewModel, vc: UIViewController)
 }

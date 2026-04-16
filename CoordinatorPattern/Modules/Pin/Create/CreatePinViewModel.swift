@@ -7,6 +7,7 @@
 
 import Combine
 
+#warning("Switch between pin modes instead of having dofferent screens")
 final class CreatePinViewModel: PinBaseViewModel {
     
     private let showConfirmPinSubject = PassthroughSubject<[Int], Never>()

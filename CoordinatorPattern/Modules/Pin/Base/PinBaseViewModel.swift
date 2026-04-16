@@ -24,6 +24,8 @@ class PinBaseViewModel {
     }
     
     //MARK: - Published Properties
+    
+    #warning("move to pin pad view the digits and reset logic")
     @Published private(set) var enteredDigits: [Int] = []
     @Published var errorMessage: String? = nil
     @Published var instructionText: String = ""
@@ -48,6 +50,7 @@ class PinBaseViewModel {
     func resetPin() {
         enteredDigits = []
     }
+    
 }
 
 //MARK: - CoordinatableViewModel

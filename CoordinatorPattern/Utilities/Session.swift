@@ -5,24 +5,43 @@
 //  Created by Denis's MacBook on 4/4/26.
 //
 
-enum Session {
-    static var isAuthorized: Bool {
+protocol SessionProvider {
+    var isAuthorized: Bool { get }
+    var hasPinCode: Bool { get }
+    var isFullAccessGranted: Bool { get }
+}
+
+final class Session: SessionProvider {
+    
+    private init() {}
+    
+    static let shared = Session()
+    
+    private var isUnlocked: Bool = false
+    
+    var isAuthorized: Bool {
         return UserDefaultsStorage.token != nil
     }
     
-    static var isFirstAccess: Bool {
-        return UserDefaultsStorage.isFirstAccess
-    }
-    
-    static var hasPinCode: Bool {
+    var hasPinCode: Bool {
         UserDefaultsStorage.pinCodeHash != nil
     }
     
-    static var isPinValidated: Bool = false
-    
-    static var needsPinEntry: Bool {
-        return isAuthorized && hasPinCode && !isPinValidated
+    var isFullAccessGranted: Bool {
+        get {
+            return isAuthorized && hasPinCode && isUnlocked
+        }
+        set {
+            isUnlocked = newValue
+        }
     }
+    
+    func signOut() {
+        isUnlocked = false
+        UserDefaultsStorage.token = nil
+        UserDefaultsStorage.currentUserIdentifier = nil
+    }
+    
 }
 
 
