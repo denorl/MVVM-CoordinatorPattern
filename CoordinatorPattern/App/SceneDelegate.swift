@@ -58,9 +58,10 @@ private extension SceneDelegate {
             fatalError("Failed to initialize UIWindow. Check SceneConfiguration in Info.plist.")
         }
         
+        let session = Session()
         let router = Router(window: window)
         let factory = AppCoordinatorFactory()
         
-        return AppCoordinator(router: router, factory: factory)
+        return AppCoordinator(router: router, factory: factory, session: session)
     }
 }

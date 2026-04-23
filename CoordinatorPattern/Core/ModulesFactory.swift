@@ -9,6 +9,7 @@ import UIKit
 
 final class ModulesFactory {
     private let mockAuthManager = MockAuthenticationManager()
+    private let pinManager = PinManager()
 }
 
 // MARK:- AuthenticationFactoryProtocol
@@ -20,15 +21,9 @@ extension ModulesFactory: AuthenticationFactoryProtocol {
         return (viewModel, view)
     }
     
-    func makeRegistrationLoginScene() -> (vm: RegistrationLoginViewModel, vc: UIViewController) {
-        let viewModel = RegistrationLoginViewModel()
-        let view = RegistrationLoginViewController(viewModel: viewModel)
-        return (viewModel, view)
-    }
-   
-    func makeRegistrationPasswordScene(login: String) -> (vm: RegistrationPasswordViewModel, vc: UIViewController) {
-        let viewModel = RegistrationPasswordViewModel(login: login, authManager: mockAuthManager)
-        let view = RegistrationPasswordViewController(viewModel: viewModel)
+    func makeRegistrationFlow() -> (vm: RegistrationViewModel, vc: UIViewController) {
+        let viewModel = RegistrationViewModel(authManager: mockAuthManager)
+        let view = RegistrationViewController(viewModel: viewModel)
         return (viewModel, view)
     }
     
@@ -36,25 +31,11 @@ extension ModulesFactory: AuthenticationFactoryProtocol {
 
 //MARK: - PinFactoryProtocol
 extension ModulesFactory: PinFactoryProtocol {
-    
-    func makeCreatePinScene() -> (vm: CreatePinViewModel, vc: UIViewController) {
-        let viewModel = CreatePinViewModel()
-        let view = CreatePinViewController(viewModel: viewModel)
+    func makePinScene(for route: Route.Pin) -> (vm: PinViewModel, vc: PinViewController) {
+        let viewModel = PinViewModel(route: route, pinManager: pinManager)
+        let view = PinViewController(viewModel: viewModel)
         return (viewModel, view)
     }
-    
-    func makeConfirmPinScene(firstPin: [Int]) -> (vm: ConfirmPinViewModel, vc: UIViewController) {
-        let viewModel = ConfirmPinViewModel(firstPin: firstPin)
-        let view = ConfirmPinViewController(viewModel: viewModel)
-        return (viewModel, view)
-    }
-    
-    func makeEnterPinScene() -> (vm: EnterPinViewModel, vc: UIViewController) {
-        let viewModel = EnterPinViewModel()
-        let view = EnterPinViewController(viewModel: viewModel)
-        return (viewModel, view)
-    }
-    
 }
 
 // MARK: - MainFactoryProtocol

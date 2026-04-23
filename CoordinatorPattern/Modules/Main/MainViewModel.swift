@@ -13,6 +13,9 @@ final class MainViewModel {
     
     private let authManager: AuthenticationManagerProtocol
     
+    @Published private(set) var isLoading = false
+    @Published private(set) var isSignOutButtonEnabled = true
+    
     init(authManager: AuthenticationManagerProtocol) {
         self.authManager = authManager
     }
@@ -20,6 +23,7 @@ final class MainViewModel {
     func signOutTapped() {
         Task {
             do {
+                isSignOutButtonEnabled = false
                 try await authManager.signOut()
                 onFinishSubject.send()
             } catch {
@@ -30,8 +34,10 @@ final class MainViewModel {
     
 }
 
+//MARK: - CoordinatableViewModel
 extension MainViewModel: CoordinatableViewModel {
     var onFinish: AnyPublisher<Void, Never> {
         onFinishSubject.eraseToAnyPublisher()
     }
 }
+

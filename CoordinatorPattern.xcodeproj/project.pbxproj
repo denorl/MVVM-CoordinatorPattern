@@ -10,7 +10,18 @@
 		086A4C782F8521D200515D16 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 086A4C772F8521D200515D16 /* SnapKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		08164D132F9FB8440040D97E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 086A4ADF2F8149BF00515D16 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 086A4AE62F8149BF00515D16;
+			remoteInfo = CoordinatorPattern;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		08164D0F2F9FB8430040D97E /* CoordinatorPatternTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoordinatorPatternTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		086A4AE72F8149BF00515D16 /* CoordinatorPattern.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoordinatorPattern.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -25,6 +36,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		08164D102F9FB8440040D97E /* CoordinatorPatternTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CoordinatorPatternTests;
+			sourceTree = "<group>";
+		};
 		086A4AE92F8149BF00515D16 /* CoordinatorPattern */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -36,6 +52,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		08164D0C2F9FB8430040D97E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		086A4AE42F8149BF00515D16 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				086A4AE92F8149BF00515D16 /* CoordinatorPattern */,
+				08164D102F9FB8440040D97E /* CoordinatorPatternTests */,
 				086A4AE82F8149BF00515D16 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				086A4AE72F8149BF00515D16 /* CoordinatorPattern.app */,
+				08164D0F2F9FB8430040D97E /* CoordinatorPatternTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,6 +91,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		08164D0E2F9FB8430040D97E /* CoordinatorPatternTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 08164D152F9FB8440040D97E /* Build configuration list for PBXNativeTarget "CoordinatorPatternTests" */;
+			buildPhases = (
+				08164D0B2F9FB8430040D97E /* Sources */,
+				08164D0C2F9FB8430040D97E /* Frameworks */,
+				08164D0D2F9FB8430040D97E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				08164D142F9FB8440040D97E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				08164D102F9FB8440040D97E /* CoordinatorPatternTests */,
+			);
+			name = CoordinatorPatternTests;
+			packageProductDependencies = (
+			);
+			productName = CoordinatorPatternTests;
+			productReference = 08164D0F2F9FB8430040D97E /* CoordinatorPatternTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		086A4AE62F8149BF00515D16 /* CoordinatorPattern */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 086A4AFA2F8149C100515D16 /* Build configuration list for PBXNativeTarget "CoordinatorPattern" */;
@@ -99,6 +147,10 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					08164D0E2F9FB8430040D97E = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 086A4AE62F8149BF00515D16;
+					};
 					086A4AE62F8149BF00515D16 = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -122,11 +174,19 @@
 			projectRoot = "";
 			targets = (
 				086A4AE62F8149BF00515D16 /* CoordinatorPattern */,
+				08164D0E2F9FB8430040D97E /* CoordinatorPatternTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		08164D0D2F9FB8430040D97E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		086A4AE52F8149BF00515D16 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,6 +197,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		08164D0B2F9FB8430040D97E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		086A4AE32F8149BF00515D16 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,7 +213,57 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		08164D142F9FB8440040D97E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 086A4AE62F8149BF00515D16 /* CoordinatorPattern */;
+			targetProxy = 08164D132F9FB8440040D97E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		08164D162F9FB8440040D97E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A3B48X2V42;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.denisorlov.CoordinatorPatternTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CoordinatorPattern.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CoordinatorPattern";
+			};
+			name = Debug;
+		};
+		08164D172F9FB8440040D97E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A3B48X2V42;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.denisorlov.CoordinatorPatternTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CoordinatorPattern.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CoordinatorPattern";
+			};
+			name = Release;
+		};
 		086A4AFB2F8149C100515D16 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -335,6 +452,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		08164D152F9FB8440040D97E /* Build configuration list for PBXNativeTarget "CoordinatorPatternTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				08164D162F9FB8440040D97E /* Debug */,
+				08164D172F9FB8440040D97E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		086A4AE22F8149BF00515D16 /* Build configuration list for PBXProject "CoordinatorPattern" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

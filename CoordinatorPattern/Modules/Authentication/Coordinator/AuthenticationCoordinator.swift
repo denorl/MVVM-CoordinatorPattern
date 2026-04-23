@@ -14,16 +14,14 @@ enum AuthenticationResult {
 }
 
 protocol AuthenticationCoordinatorOutput {
-    var finishFlow: AnyPublisher<AuthenticationResult, Never> { get }
+    var finishFlow: AnyPublisher<Void, Never> { get }
 }
 
 final class AuthenticationCoordinator: BaseCoordinator, AuthenticationCoordinatorOutput {
     
-    private var pendingRegistrationData = PendingAuthData()
-    
     //MARK: - AuthenticationCoordinatorOutput
-    private let finishFlowSubject = PassthroughSubject<AuthenticationResult, Never>()
-    var finishFlow: AnyPublisher<AuthenticationResult, Never> {
+    private let finishFlowSubject = PassthroughSubject<Void, Never>()
+    var finishFlow: AnyPublisher<Void, Never> {
         finishFlowSubject.eraseToAnyPublisher()
     }
         
@@ -33,23 +31,19 @@ final class AuthenticationCoordinator: BaseCoordinator, AuthenticationCoordinato
     
     //MARK: - Initializer
     init(router: Routable, authFactory: AuthenticationFactoryProtocol) {
-        self.authFactory = authFactory
         self.router = router
-        
+        self.authFactory = authFactory
+
         super.init()
+    }
+    
+    override func start() {
+        performLoginFlow()
     }
     
 }
 
-//MARK: - Coordinatable
-extension AuthenticationCoordinator: Coordinatable {
-    func start() {
-        setupPopListener()
-        performLoginFlow()
-    }
-}
-
-//MARK: - Flow Handling Methods
+//MARK: - Flows Assembly
 private extension AuthenticationCoordinator {
     
     func performLoginFlow() {
@@ -57,61 +51,57 @@ private extension AuthenticationCoordinator {
 
         viewModel.showRegistration
             .sink { [weak self] in
-                self?.performRegistrationLoginFlow()
+                self?.performRegistrationFlow()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.onErrorPublisher
+            .sink { [weak self] title, message in
+                let action = AlertConfiguration.AlertAction(title: "Try Again", style: .default, completion: nil)
+                let config = AlertConfiguration(
+                    title: title,
+                    message: message,
+                    style: .alert, actions: [action]
+                )
+                
+                self?.router.presentAlert(config: config)
             }
             .store(in: &cancellables)
         
         bindFinish(from: viewModel) { [weak self] in
-            self?.finishFlowSubject.send(.loginCompleted)
+            self?.finishFlowSubject.send()
         }
     
         router.setRootModule(view, hideNavBar: false)
     }
     
-    func performRegistrationLoginFlow() {
-        let (viewModel, view) = authFactory.makeRegistrationLoginScene()
+    func performRegistrationFlow() {
+        let (viewModel, view) = authFactory.makeRegistrationFlow()
         
-        viewModel.showCreatePassword
-            .sink { [weak self] login in
-                self?.pendingRegistrationData.pendingLogin = login
-                self?.performRegistrationPasswordFlow()
+        viewModel.backToLoginPubliher
+            .sink { [weak self] in
+                self?.router.popModule(animated: true)
             }
             .store(in: &cancellables)
         
-        router.push(view, animated: true)
-    }
-    
-    func performRegistrationPasswordFlow() {
-        guard let login = pendingRegistrationData.pendingLogin else { return }
-        let (viewModel, view) = authFactory.makeRegistrationPasswordScene(login: login)
+        viewModel.onErrorPublisher
+            .sink { [weak self] title, message in
+                let action = AlertConfiguration.AlertAction(title: "Try Again", style: .default, completion: nil)
+                let config = AlertConfiguration(
+                    title: title,
+                    message: message,
+                    style: .alert, actions: [action]
+                )
+                
+                self?.router.presentAlert(config: config)
+            }
+            .store(in: &cancellables)
         
         bindFinish(from: viewModel) { [weak self] in
-            self?.finishFlowSubject.send(.registrationCompleted)
+            self?.finishFlowSubject.send()
         }
         
-        router.push(view, animated: true)
-    }
-    
-}
-
-//MARK: - Private Methods
-private extension AuthenticationCoordinator {
-    
-    func setupPopListener() {
-        router.popPublisher
-            .sink { [weak self] poppedController in
-                self?.handlePop(poppedController)
-            }
-            .store(in: &cancellables)
-    }
-    
-    func handlePop(_ controller: UIViewController) {
-        guard let controller = controller as? RouteIdentifiable else { return }
-        switch controller.route {
-        case .registrationLogin:
-            pendingRegistrationData.pendingLogin = nil
-        default: break
-        }
+        router.push(view, animated: true, hideBackButton: true)
     }
     
 }

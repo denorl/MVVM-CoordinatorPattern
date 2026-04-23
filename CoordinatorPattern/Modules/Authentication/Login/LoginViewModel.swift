@@ -7,11 +7,17 @@
 import Foundation
 import Combine
 
-final class LoginViewModel: AuthenticationViewModel {
+final class LoginViewModel: CoordinatableViewModel {
     
     private let authManager: AuthenticationManagerProtocol
     
-    //MARK: - Publishers
+    //MARK: - Finish Login Flow publisher
+    private let onFinishSubject = PassthroughSubject<Void, Never>()
+    var onFinish: AnyPublisher<Void, Never> {
+        onFinishSubject.eraseToAnyPublisher()
+    }
+    
+    //MARK: - Other Publishers
     private let showRegistrationSubject = PassthroughSubject<Void, Never>()
     var showRegistration: AnyPublisher<Void, Never> {
         showRegistrationSubject.eraseToAnyPublisher()
@@ -22,34 +28,32 @@ final class LoginViewModel: AuthenticationViewModel {
         showEnterPinSubject.eraseToAnyPublisher()
     }
     
+    private let onErrorSubject = PassthroughSubject<(String, String), Never>()
+    var onErrorPublisher: AnyPublisher<(String, String), Never> {
+        onErrorSubject.eraseToAnyPublisher()
+    }
+    
     //MARK: - Published Properties
-    @Published private(set) var loginBorderState: AuthTextField.ValidationState = .neutral
-    @Published private(set) var passwordBorderState: AuthTextField.ValidationState = .neutral
+    @Published var selectedAuthMethod: AuthMethod = .document
+    
+    @Published private(set) var loginValidationResult: ValidationResult = .neutral
+    @Published private(set) var passwordValidationResult: ValidationResult = .neutral
+    
+    @Published var isButtonEnabled: Bool = false
     
     @Published var loginInput: String = ""
     @Published var passwordInput: String = ""
     
-    @Published private(set) var loginError: String? = nil
-    @Published private(set) var passwordError: String? = nil
-    
     //MARK: - Initializers
     init(authManager: AuthenticationManagerProtocol) {
         self.authManager = authManager
-        super.init()
-        bindContinueButtonState()
         setupLoginValidation()
         setupPasswordValidation()
+        bindContinueButtonState()
     }
     
-    override func bindContinueButtonState() {
-        Publishers.CombineLatest3($loginError, $passwordError, $loginInput)
-            .map { loginError, passError, loginInput in
-                return loginError == nil && passError == nil && !loginInput.isEmpty
-            }
-            .assign(to: &$isButtonEnabled)
-    }
-    
-    override func continueButtonTapped() {
+    //MARK: - Actions Methods
+    func continueButtonTapped() {
         Task {
             do {
                 let identifier = selectedAuthMethod.createIdentifier(from: loginInput)
@@ -58,8 +62,8 @@ final class LoginViewModel: AuthenticationViewModel {
                     password: passwordInput
                 )
                 onFinishSubject.send()
-            } catch {
-                print(error.localizedDescription)
+            } catch let error as AuthError {
+                onErrorSubject.send((error.errorTitle,error.errorDescription))
             }
         }
     }
@@ -70,27 +74,35 @@ final class LoginViewModel: AuthenticationViewModel {
     
 }
 
-//MARK: - LoginValidatable
-extension LoginViewModel: LoginValidatable {
+//MARK: - Login & Password Validation
+extension LoginViewModel: LoginValidatable, PasswordValidatable {
+    
     func setupLoginValidation() {
-        let loginValidation = loginValidation(
+        let loginValidationResult = loginValidation(
             input: $loginInput.eraseToAnyPublisher(),
             method: $selectedAuthMethod.eraseToAnyPublisher()
         )
         
-        loginValidation.error.assign(to: &$loginError)
-        loginValidation.state.assign(to: &$loginBorderState)
+        loginValidationResult.assign(to: &$loginValidationResult)
     }
-}
-
-//MARK: - PasswordValidationProvider
-extension LoginViewModel: PasswordValidatable {
+    
     func setupPasswordValidation() {
-        let passwordValidation = passwordValidation(
+        let passwordValidationResult = passwordValidation(
             input: $passwordInput.eraseToAnyPublisher()
         )
         
-        passwordValidation.error.assign(to: &$passwordError)
-        passwordValidation.state.assign(to: &$passwordBorderState)
+        passwordValidationResult.assign(to: &$passwordValidationResult)
+    }
+    
+}
+
+//MARK: - Button State Configuration
+private extension LoginViewModel {
+    func bindContinueButtonState() {
+        Publishers.CombineLatest($loginValidationResult, $passwordValidationResult)
+            .map { loginVal, passwordVal in
+                return loginVal.state == .valid && passwordVal.state == .valid
+            }
+            .assign(to: &$isButtonEnabled)
     }
 }

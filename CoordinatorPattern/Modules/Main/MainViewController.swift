@@ -11,10 +11,11 @@ import Combine
 
 final class MainViewController: UIViewController {
     
+    private var cancellables = Set<AnyCancellable>()
     private let viewModel: MainViewModel
     
     //MARK: - UI Properties
-    private let signOutButton = UIButton(type: .system)
+    private let signOutButton = LibertyButton()
     
     //MARK: - Initializers
     init(viewModel: MainViewModel) {
@@ -36,13 +37,9 @@ final class MainViewController: UIViewController {
 
     //MARK: - SetupUI
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = Theme.Color.themeBackground.color
         
-        signOutButton.backgroundColor = .red
-        signOutButton.layer.cornerRadius = 15
-        signOutButton.setTitle("Sign Out", for: .normal)
-        signOutButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
-        signOutButton.setTitleColor(.white, for: .normal)
+        signOutButton.config = .destructive(title: "Sign Out")
         signOutButton.addTarget(self, action: #selector(signOutButtonTapped), for: .touchUpInside)
     }
     
@@ -51,11 +48,22 @@ final class MainViewController: UIViewController {
         
         signOutButton.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(0.065)
-            make.width.equalToSuperview().multipliedBy(0.9)
+            make.height.equalTo(AppLayout.buttonHeight)
+            make.width.equalToSuperview().inset(AppLayout.horizontalInset)
         }
     }
     
+}
+
+//MARK: - VM Binding
+private extension MainViewController {
+    func bindViewModel() {
+        viewModel.$isSignOutButtonEnabled
+            .sink { [weak self] isEnabled in
+                self?.signOutButton.isEnabled = isEnabled
+            }
+            .store(in: &cancellables)
+    }
 }
 
 //MARK: - Private Methods

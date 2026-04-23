@@ -12,7 +12,7 @@ protocol MainCoordinatorOutput {
 }
 
 final class MainCoordinator: BaseCoordinator, MainCoordinatorOutput {
-    
+
     private let finishFlowSubject = PassthroughSubject<Void, Never>()
     var finishFlow: AnyPublisher<Void, Never> {
         finishFlowSubject.eraseToAnyPublisher()
@@ -26,10 +26,7 @@ final class MainCoordinator: BaseCoordinator, MainCoordinatorOutput {
         self.factory = factory
     }
     
-}
-
-extension MainCoordinator: Coordinatable {
-    func start() {
+    override func start() {
         let (viewModel, view) = factory.makeMainModule()
         
         viewModel.onFinish
@@ -41,4 +38,6 @@ extension MainCoordinator: Coordinatable {
             )
         router.setRootModule(view, hideNavBar: false)
     }
+    
 }
+
