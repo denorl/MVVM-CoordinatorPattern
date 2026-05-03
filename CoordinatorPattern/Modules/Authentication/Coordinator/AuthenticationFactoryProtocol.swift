@@ -9,5 +9,6 @@ import UIKit
 
 protocol AuthenticationFactoryProtocol {
     func makeLoginScene() -> (vm: LoginViewModel, vc: UIViewController)
-    func makeRegistrationFlow() -> (vm: RegistrationViewModel, vc: UIViewController)
+    func makeRegistrationScene() -> (vm: RegistrationViewModel, vc: UIViewController)
 }
+

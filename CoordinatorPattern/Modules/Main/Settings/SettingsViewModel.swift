@@ -1,18 +1,21 @@
 //
-//  MainViewModel.swift
+//  SettingsViewModel.swift
 //  CoordinatorPattern
 //
-//  Created by Denis's MacBook on 12/4/26.
+//  Created by Denis's MacBook on 1/5/26.
 //
 
 import Foundation
 import Combine
 
-final class MainViewModel {
-    private let onFinishSubject = PassthroughSubject<Void, Never>()
+final class SettingsViewModel {
     
     private let authManager: AuthenticationManagerProtocol
     
+    //MARK: - Finish settings flow publisher
+    private let finishSettingsFlowPublisher = PassthroughSubject<Void, Never>()
+    
+    //MARK: - Published properties
     @Published private(set) var isLoading = false
     @Published private(set) var isSignOutButtonEnabled = true
     
@@ -25,7 +28,7 @@ final class MainViewModel {
             do {
                 isSignOutButtonEnabled = false
                 try await authManager.signOut()
-                onFinishSubject.send()
+                finishSettingsFlowPublisher.send()
             } catch {
                 print(error.localizedDescription)
             }
@@ -35,9 +38,9 @@ final class MainViewModel {
 }
 
 //MARK: - CoordinatableViewModel
-extension MainViewModel: CoordinatableViewModel {
+extension SettingsViewModel: CoordinatableViewModel {
     var onFinish: AnyPublisher<Void, Never> {
-        onFinishSubject.eraseToAnyPublisher()
+        finishSettingsFlowPublisher.eraseToAnyPublisher()
     }
 }
 

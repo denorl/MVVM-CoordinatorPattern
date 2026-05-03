@@ -12,9 +12,9 @@ final class LoginViewModel: CoordinatableViewModel {
     private let authManager: AuthenticationManagerProtocol
     
     //MARK: - Finish Login Flow publisher
-    private let onFinishSubject = PassthroughSubject<Void, Never>()
+    private let finishLoginSubject = PassthroughSubject<Void, Never>()
     var onFinish: AnyPublisher<Void, Never> {
-        onFinishSubject.eraseToAnyPublisher()
+        finishLoginSubject.eraseToAnyPublisher()
     }
     
     //MARK: - Other Publishers
@@ -61,7 +61,7 @@ final class LoginViewModel: CoordinatableViewModel {
                     identifier: identifier,
                     password: passwordInput
                 )
-                onFinishSubject.send()
+                finishLoginSubject.send()
             } catch let error as AuthError {
                 onErrorSubject.send((error.errorTitle,error.errorDescription))
             }

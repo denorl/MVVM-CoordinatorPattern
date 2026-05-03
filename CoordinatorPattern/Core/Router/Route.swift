@@ -22,4 +22,8 @@ enum Route {
         case confirmPin
         case forgotPin
     }
+    
+    enum Home {
+        case currencyRates
+    }
 }

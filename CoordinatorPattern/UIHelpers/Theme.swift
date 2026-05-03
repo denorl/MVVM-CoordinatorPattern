@@ -23,9 +23,7 @@ enum Theme {
         case label
         case secondaryLabel
         case primaryButtonText(opacity: CGFloat = 1)
-        
-        case separator
-        
+                
         var color: UIColor {
             
             return UIColor { traitCollection in
@@ -47,7 +45,7 @@ enum Theme {
                     return isDarkMode ? UIColor(hex: "#1E1E1E") : UIColor(hex: "#F3F4F8")
                     
                 case .surface:
-                    return isDarkMode ? UIColor(hex: "#252525") : UIColor(hex: "#FFFFFF")
+                    return isDarkMode ? UIColor(hex: "#FFFFFF") : UIColor(hex: "#252525") 
                     
                 case .label:
                     return isDarkMode ? UIColor(hex: "#FFFFFF") : UIColor(hex: "#000000")
@@ -58,8 +56,6 @@ enum Theme {
                 case .primaryButtonText(let opacity):
                     return UIColor(hex: "#FFFFFF").withAlphaComponent(opacity)
                     
-                case .separator:
-                    return isDarkMode ? UIColor(hex: "#38383A") : UIColor(hex: "#E5E5EA")
                 }
             }
             

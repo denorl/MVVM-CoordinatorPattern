@@ -1,44 +1,29 @@
 //
-//  MainViewController.swift
+//  SettingsViewController.swift
 //  CoordinatorPattern
 //
-//  Created by Denis's MacBook on 12/4/26.
+//  Created by Denis's MacBook on 1/5/26.
 //
 
 import UIKit
 import SnapKit
 import Combine
 
-final class MainViewController: UIViewController {
-    
-    private var cancellables = Set<AnyCancellable>()
-    private let viewModel: MainViewModel
+final class SettingsViewController: BaseViewController<SettingsViewModel> {
     
     //MARK: - UI Properties
     private let signOutButton = LibertyButton()
     
-    //MARK: - Initializers
-    init(viewModel: MainViewModel) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     //MARK: - Overriden Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
         configureConstraints()
+        bindViewModel()
     }
 
     //MARK: - SetupUI
-    private func setupUI() {
-        view.backgroundColor = Theme.Color.themeBackground.color
-        
+    private func setupUI() {        
         signOutButton.config = .destructive(title: "Sign Out")
         signOutButton.addTarget(self, action: #selector(signOutButtonTapped), for: .touchUpInside)
     }
@@ -56,7 +41,7 @@ final class MainViewController: UIViewController {
 }
 
 //MARK: - VM Binding
-private extension MainViewController {
+private extension SettingsViewController {
     func bindViewModel() {
         viewModel.$isSignOutButtonEnabled
             .sink { [weak self] isEnabled in
@@ -67,7 +52,7 @@ private extension MainViewController {
 }
 
 //MARK: - Private Methods
-private extension MainViewController {
+private extension SettingsViewController {
     @objc func signOutButtonTapped() {
         viewModel.signOutTapped()
     }

@@ -66,12 +66,13 @@ private extension AppCoordinator {
     }
     
     func performMainFlow() {
-        let coordinator = factory.makeMainCoordinator(router: router)
+        let coordinator = factory.makeTabBarCoordinator(router: router)
+        
         coordinator.finishFlow
             .first()
-            .sink { [weak self] in
+            .sink { [weak self] finishReason in
                 self?.removeChildCoordinator(coordinator)
-                self?.session.end()
+                self?.handleMainFlowFinish(finishReason)
                 self?.start()
             }
             .store(in: &cancellables)
@@ -93,6 +94,13 @@ private extension AppCoordinator {
             .store(in: &cancellables)
         addChildCoordinator(coordinator)
         coordinator.start()
+    }
+    
+    func handleMainFlowFinish(_ finishReason: TabFlowFinishReason) {
+        switch finishReason {
+        case .signOut:
+            self.session.end()
+        }
     }
 
 }

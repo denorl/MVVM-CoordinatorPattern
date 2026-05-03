@@ -19,7 +19,7 @@ extension AppCoordinatorFactory: AppCoordinatorFactoryProtocol {
         return PinCoordinator(router: router, route: route, factory: modulesFactory)
     }
     
-    func makeMainCoordinator(router: Routable) -> Coordinatable & MainCoordinatorOutput {
-        return MainCoordinator(router: router, factory: modulesFactory)
+    func makeTabBarCoordinator(router: Routable) -> Coordinatable & TabBarCoordinatorOutput {
+        return TabBarCoordinator(router: router, factory: TabBarCoordinatorFactory(modulesFactory: modulesFactory))
     }
 }

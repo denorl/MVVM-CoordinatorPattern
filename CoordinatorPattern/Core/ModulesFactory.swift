@@ -12,7 +12,7 @@ final class ModulesFactory {
     private let pinManager = PinManager()
 }
 
-// MARK:- AuthenticationFactoryProtocol
+//MARK: - AuthenticationFactoryProtocol
 extension ModulesFactory: AuthenticationFactoryProtocol {
     
     func makeLoginScene() -> (vm: LoginViewModel, vc: UIViewController) {
@@ -21,7 +21,7 @@ extension ModulesFactory: AuthenticationFactoryProtocol {
         return (viewModel, view)
     }
     
-    func makeRegistrationFlow() -> (vm: RegistrationViewModel, vc: UIViewController) {
+    func makeRegistrationScene() -> (vm: RegistrationViewModel, vc: UIViewController) {
         let viewModel = RegistrationViewModel(authManager: mockAuthManager)
         let view = RegistrationViewController(viewModel: viewModel)
         return (viewModel, view)
@@ -38,11 +38,12 @@ extension ModulesFactory: PinFactoryProtocol {
     }
 }
 
-// MARK: - MainFactoryProtocol
-extension ModulesFactory: MainFactoryProtocol {
-    func makeMainModule() -> (vm: MainViewModel, vc: UIViewController) {
-        let viewModel = MainViewModel(authManager: mockAuthManager)
-        let view = MainViewController(viewModel: viewModel)
+//MARK: - SettingsFactoryProtocol
+extension ModulesFactory: SettingsFactoryProtocol {
+    func makeSettingsScene() -> (vm: SettingsViewModel, vc: UIViewController) {
+        let viewModel = SettingsViewModel(authManager: mockAuthManager)
+        let view = SettingsViewController(viewModel: viewModel)
         return (viewModel, view)
     }
 }
+

@@ -88,6 +88,7 @@ final class PinManager: PinManagerProtocol {
     func removePin() throws {
         try storage.delete(for: .userPinHash)
         try storage.delete(for: .pinOwnerId)
+        print("Successfully removed all pin data")
     }
     
     // MARK: - Private Logic

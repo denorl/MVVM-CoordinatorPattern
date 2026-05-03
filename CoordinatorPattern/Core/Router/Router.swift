@@ -24,16 +24,16 @@ struct AlertConfiguration {
 final class Router: NSObject {
     private var rootController = UINavigationController()
     
-    private let window: UIWindow
+    private let window: UIWindow?
     private let popSubject = PassthroughSubject<UIViewController, Never>()
     var popPublisher: AnyPublisher<UIViewController, Never> {
         popSubject.eraseToAnyPublisher()
     }
     
-    init(window: UIWindow) {
+    init(window: UIWindow? = nil) {
         self.window = window
         super.init()
-        assignRootController()
+        if window != nil { assignRootController() }
         self.rootController.delegate = self
     }
     
@@ -55,13 +55,14 @@ extension Router: UINavigationControllerDelegate {
         
         popSubject.send(poppedController)
     }
+
 }
 
 //MARK: - Routable
 extension Router: Routable {
     func assignRootController() {
-        window.rootViewController = rootController
-        window.makeKeyAndVisible()
+        window?.rootViewController = rootController
+        window?.makeKeyAndVisible()
     }
     
     func present(_ module: (any Presentable)?, animated: Bool) {}
@@ -98,11 +99,13 @@ extension Router: Routable {
         
         rootController.setViewControllers([controller], animated: false)
         rootController.isNavigationBarHidden = hideNavBar
-        
-        UIView.transition(with: window,
-                          duration: 0.5,
-                          options: .transitionFlipFromRight,
-                          animations: nil)
+                
+        if let window {
+            UIView.transition(with: window,
+                              duration: 0.5,
+                              options: .transitionFlipFromRight,
+                              animations: nil)
+        }
     }
     
     func popModule(animated: Bool) {

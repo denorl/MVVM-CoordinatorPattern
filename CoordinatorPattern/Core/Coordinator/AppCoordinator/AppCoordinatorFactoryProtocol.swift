@@ -8,5 +8,5 @@
 protocol AppCoordinatorFactoryProtocol {
     func makeAuthenticationCoordinator(router: Routable) -> Coordinatable & AuthenticationCoordinatorOutput
     func makePinCoordinator(router: Routable, route: Route.Pin) -> Coordinatable & PinCoordinatorOutput
-    func makeMainCoordinator(router: Routable) -> Coordinatable & MainCoordinatorOutput
+    func makeTabBarCoordinator(router: Routable) -> Coordinatable & TabBarCoordinatorOutput
 }

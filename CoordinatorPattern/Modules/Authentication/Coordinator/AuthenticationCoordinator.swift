@@ -76,7 +76,7 @@ private extension AuthenticationCoordinator {
     }
     
     func performRegistrationFlow() {
-        let (viewModel, view) = authFactory.makeRegistrationFlow()
+        let (viewModel, view) = authFactory.makeRegistrationScene()
         
         viewModel.backToLoginPubliher
             .sink { [weak self] in
