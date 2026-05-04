@@ -41,7 +41,7 @@ extension AppLayout {
         clampedHeight(50, minVal: 44, maxVal: 60)
     }
     
-    static let topOffset: CGFloat = 80.scaled
+    static let topScreenOffset: CGFloat = 80.scaled
     static let safeAreaTopOffset: CGFloat = 40.scaled
     static let horizontalInset: CGFloat = 20.scaled
     
@@ -56,7 +56,7 @@ extension AppLayout {
     /// All values are automatically adjusted by the `scaleFactor`.
     enum Spacing {
         /// 4pt - Used for tightly coupled elements like a label and its validation hint.
-        static let quark: CGFloat = 4.scaled
+        static let quark: CGFloat = 2.scaled
         
         /// 8pt - Tight spacing for related items such as a title and subtitle.
         static let tiny: CGFloat = 8.scaled

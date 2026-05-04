@@ -18,10 +18,10 @@ final class SettingsCoordinator: BaseCoordinator, SettingsCoordinatorOutput {
         finishFlowSubject.eraseToAnyPublisher()
     }
     
-    private let router: Routable
+    private let router: NavigationRoutable
     private let factory: SettingsFactoryProtocol
     
-    init(router: Routable, factory: SettingsFactoryProtocol) {
+    init(router: NavigationRoutable, factory: SettingsFactoryProtocol) {
         self.router = router
         self.factory = factory
     }

@@ -26,11 +26,11 @@ final class AuthenticationCoordinator: BaseCoordinator, AuthenticationCoordinato
     }
         
     //MARK: - Dependencies
-    private let router: Routable
+    private let router: FullRoutable
     private let authFactory: AuthenticationFactoryProtocol
     
     //MARK: - Initializer
-    init(router: Routable, authFactory: AuthenticationFactoryProtocol) {
+    init(router: FullRoutable, authFactory: AuthenticationFactoryProtocol) {
         self.router = router
         self.authFactory = authFactory
 
@@ -72,7 +72,7 @@ private extension AuthenticationCoordinator {
             self?.finishFlowSubject.send()
         }
     
-        router.setRootModule(view, hideNavBar: false)
+        router.assignRootController(view)
     }
     
     func performRegistrationFlow() {

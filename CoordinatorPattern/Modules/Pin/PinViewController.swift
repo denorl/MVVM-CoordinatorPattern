@@ -187,7 +187,7 @@ private extension PinViewController {
 //MARK: - Private Helpers
 private extension PinViewController {
     func animateTransition(for route: Route.Pin) {
-        let direction: UIView.TransitionDirection = (route == .createPin) ? .backward : .forward
+        let direction: UIView.TransitionDirection = (route == .confirmPin) ? .forward : .backward
         instructionLabel.slideTransition(direction: direction)
     }
     

@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum MainTab {
+enum MainTab: CaseIterable {
     case home, profile, settings
 
     var item: UITabBarItem {

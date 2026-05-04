@@ -7,10 +7,14 @@
 import Combine
 import UIKit
 
-protocol Routable: Presentable {
+typealias FullRoutable = NavigationRoutable & WindowRoutable
+
+protocol WindowRoutable {
+    func assignRootController(_ controller: UIViewController)
+}
+
+protocol NavigationRoutable: Presentable {
     var popPublisher: AnyPublisher<UIViewController, Never> { get }
-    
-    func assignRootController() 
     
     func present(_ module: Presentable?, animated: Bool)
     func presentAlert(config: AlertConfiguration, animated: Bool)
@@ -22,7 +26,7 @@ protocol Routable: Presentable {
     func dismissModule(animated: Bool, completion: (() -> Void)?)
 }
 
-extension Routable {
+extension NavigationRoutable {
     func push(_ module: (any Presentable)?, animated: Bool, hideBackButton: Bool = false) {
         self.push(module, animated: animated, hideBackButton: hideBackButton)
     }

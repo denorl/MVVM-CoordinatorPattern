@@ -21,11 +21,11 @@ fileprivate enum LaunchInstructor {
 
 final class AppCoordinator: BaseCoordinator {
     
-    private let router: Routable
+    private let router: FullRoutable
     private let factory: AppCoordinatorFactoryProtocol
     private var session: SessionProvider
     
-    init(router: Routable, factory: AppCoordinatorFactoryProtocol, session: SessionProvider) {
+    init(router: FullRoutable, factory: AppCoordinatorFactoryProtocol, session: SessionProvider) {
         self.router = router
         self.factory = factory
         self.session = session
@@ -96,7 +96,7 @@ private extension AppCoordinator {
         coordinator.start()
     }
     
-    func handleMainFlowFinish(_ finishReason: TabFlowFinishReason) {
+    func handleMainFlowFinish(_ finishReason: TabFlow.TabFlowFinishReason) {
         switch finishReason {
         case .signOut:
             self.session.end()

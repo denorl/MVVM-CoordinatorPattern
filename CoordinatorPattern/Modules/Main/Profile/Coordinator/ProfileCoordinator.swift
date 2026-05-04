@@ -18,10 +18,10 @@ final class ProfileCoordinator: BaseCoordinator, ProfileCoordinatorOutput {
         finishFlowSubject.eraseToAnyPublisher()
     }
     
-    private let router: Routable
+    private let router: NavigationRoutable
     private let factory: ProfileFactoryProtocol
     
-    init(router: Routable, factory: ProfileFactoryProtocol) {
+    init(router: NavigationRoutable, factory: ProfileFactoryProtocol) {
         self.router = router
         self.factory = factory
     }

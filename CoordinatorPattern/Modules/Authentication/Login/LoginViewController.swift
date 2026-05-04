@@ -67,7 +67,7 @@ final class LoginViewController: BaseViewController<LoginViewModel> {
         view.addSubview(stackView)
         
         stackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(AppLayout.topOffset).priority(.low)
+            make.top.equalToSuperview().offset(AppLayout.topScreenOffset).priority(.low)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().inset(AppLayout.horizontalInset)
         }

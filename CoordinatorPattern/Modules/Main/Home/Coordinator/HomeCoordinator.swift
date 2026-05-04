@@ -19,10 +19,10 @@ final class HomeCoordinator: BaseCoordinator, HomeCoordinatorOutput {
         finishFlowSubject.eraseToAnyPublisher()
     }
     
-    private let router: Routable
+    private let router: NavigationRoutable
     private let factory: HomeFactoryProtocol
     
-    init(router: Routable, factory: HomeFactoryProtocol) {
+    init(router: NavigationRoutable, factory: HomeFactoryProtocol) {
         self.router = router
         self.factory = factory
     }
@@ -30,9 +30,9 @@ final class HomeCoordinator: BaseCoordinator, HomeCoordinatorOutput {
     override func start() {
         let (viewModel, view) = factory.makeHomeScene()
         
-        viewModel.showCurrencyRatesDetais
+        viewModel.showAccountDetais
             .sink { [weak self] in
-                self?.performCurrencyRatesDetailsFlow()
+                self?.performAccountDetailsFlow()
             }
             .store(in: &cancellables)
         
@@ -47,8 +47,8 @@ final class HomeCoordinator: BaseCoordinator, HomeCoordinatorOutput {
 
 //MARK: - Flows Assembly
 private extension HomeCoordinator {
-    func performCurrencyRatesDetailsFlow() {
-        let (viewModel, view) = factory.makeCurrencyRatesDetailsScene()
+    func performAccountDetailsFlow() {
+        let (viewModel, view) = factory.makeAccountDetailsScene()
         
         bindFinish(from: viewModel) { [weak self] in
             self?.router.popModule(animated: true)

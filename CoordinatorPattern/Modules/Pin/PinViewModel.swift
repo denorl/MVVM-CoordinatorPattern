@@ -15,6 +15,7 @@ final class PinViewModel {
     
     let maxDigits = AppStyle.Pin.maxDigits
     private var firstPin: [Int]?
+    private var previousRoute: Route.Pin?
     
     //MARK: - Finish Flow Publishers
     let onFinishSubject = PassthroughSubject<Void, Never>()
@@ -59,11 +60,12 @@ final class PinViewModel {
         enteredDigits.removeLast()
     }
     
-    
     func backButtonTapped() {
         guard route == .confirmPin else { return }
         enteredDigits.removeAll()
-        route = .createPin
+        
+        route = previousRoute == .forgotPin ? .forgotPin : .createPin
+        previousRoute = nil
         firstPin = nil
     }
     
@@ -101,6 +103,7 @@ extension PinViewModel {
 private extension PinViewModel {
         
     func handleRouting() {
+        previousRoute = route
         switch route {
         case .confirmPin, .enterPin:
             handlePinEntry()

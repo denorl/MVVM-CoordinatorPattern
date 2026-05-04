@@ -20,11 +20,11 @@ final class PinCoordinator: BaseCoordinator, PinCoordinatorOutput {
         finishPinFlowSubject.eraseToAnyPublisher()
     }
     
-    private let router: Routable
+    private let router: NavigationRoutable
     private let route: Route.Pin
     private let factory: PinFactoryProtocol
     
-    init(router: Routable, route: Route.Pin, factory: PinFactoryProtocol) {
+    init(router: NavigationRoutable, route: Route.Pin, factory: PinFactoryProtocol) {
         self.router = router
         self.route = route
         self.factory = factory

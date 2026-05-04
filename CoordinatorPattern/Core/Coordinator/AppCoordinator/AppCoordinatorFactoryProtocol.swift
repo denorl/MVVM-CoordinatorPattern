@@ -6,7 +6,7 @@
 //
 
 protocol AppCoordinatorFactoryProtocol {
-    func makeAuthenticationCoordinator(router: Routable) -> Coordinatable & AuthenticationCoordinatorOutput
-    func makePinCoordinator(router: Routable, route: Route.Pin) -> Coordinatable & PinCoordinatorOutput
-    func makeTabBarCoordinator(router: Routable) -> Coordinatable & TabBarCoordinatorOutput
+    func makeAuthenticationCoordinator(router: FullRoutable) -> Coordinatable & AuthenticationCoordinatorOutput
+    func makePinCoordinator(router: NavigationRoutable, route: Route.Pin) -> Coordinatable & PinCoordinatorOutput
+    func makeTabBarCoordinator(router: FullRoutable) -> Coordinatable & TabBarCoordinatorOutput
 }

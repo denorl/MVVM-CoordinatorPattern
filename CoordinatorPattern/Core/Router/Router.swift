@@ -23,7 +23,6 @@ struct AlertConfiguration {
 
 final class Router: NSObject {
     private var rootController = UINavigationController()
-    
     private let window: UIWindow?
     private let popSubject = PassthroughSubject<UIViewController, Never>()
     var popPublisher: AnyPublisher<UIViewController, Never> {
@@ -33,7 +32,10 @@ final class Router: NSObject {
     init(window: UIWindow? = nil) {
         self.window = window
         super.init()
-        if window != nil { assignRootController() }
+        if window != nil {
+            window?.rootViewController = rootController
+            window?.makeKeyAndVisible()
+        }
         self.rootController.delegate = self
     }
     
@@ -59,10 +61,12 @@ extension Router: UINavigationControllerDelegate {
 }
 
 //MARK: - Routable
-extension Router: Routable {
-    func assignRootController() {
-        window?.rootViewController = rootController
+extension Router: FullRoutable {
+    func assignRootController(_ controller: UIViewController) {
+        window?.rootViewController = controller
         window?.makeKeyAndVisible()
+        
+        animateWindowTransition()
     }
     
     func present(_ module: (any Presentable)?, animated: Bool) {}
@@ -99,13 +103,6 @@ extension Router: Routable {
         
         rootController.setViewControllers([controller], animated: false)
         rootController.isNavigationBarHidden = hideNavBar
-                
-        if let window {
-            UIView.transition(with: window,
-                              duration: 0.5,
-                              options: .transitionFlipFromRight,
-                              animations: nil)
-        }
     }
     
     func popModule(animated: Bool) {
@@ -114,4 +111,17 @@ extension Router: Routable {
     
     func dismissModule(animated: Bool, completion: (() -> Void)?) {}
     
+}
+
+//MARK: - Helper Methods
+private extension Router {
+    func animateWindowTransition() {
+        if let window = self.window {
+            UIView.transition(with: window,
+                              duration: 0.5,
+                              options: .transitionFlipFromRight,
+                              animations: nil,
+                              completion: nil)
+        }
+    }
 }
