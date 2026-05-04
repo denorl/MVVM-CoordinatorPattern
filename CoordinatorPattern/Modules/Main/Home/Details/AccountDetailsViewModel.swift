@@ -7,13 +7,13 @@
 
 import Combine
 
-final class CurrencyRatesViewModel {
+final class AccountDetailsViewModel {
     
     private let finishFlowSubject = PassthroughSubject<Void, Never>()
 
 }
 
-extension CurrencyRatesViewModel: CoordinatableViewModel {
+extension AccountDetailsViewModel: CoordinatableViewModel {
     var onFinish: AnyPublisher<Void, Never> {
         finishFlowSubject.eraseToAnyPublisher()
     }

@@ -39,13 +39,13 @@ enum Theme {
                 case .themeLightGray:
                     return UIColor(hex: "#D3D3D3")
                 case .themeBackground:
-                    return isDarkMode ? UIColor(hex: "#121212") : UIColor(hex: "#FFFFFF")
+                    return isDarkMode ? UIColor(hex: "#121212") : UIColor(hex: "#F5F5F5")
                     
                 case .secondaryBackground:
                     return isDarkMode ? UIColor(hex: "#1E1E1E") : UIColor(hex: "#F3F4F8")
                     
                 case .surface:
-                    return isDarkMode ? UIColor(hex: "#FFFFFF") : UIColor(hex: "#252525") 
+                    return isDarkMode ? UIColor(hex: "#252525") : UIColor(hex: "#FFFFFF")
                     
                 case .label:
                     return isDarkMode ? UIColor(hex: "#FFFFFF") : UIColor(hex: "#000000")

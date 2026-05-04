@@ -29,7 +29,7 @@ enum AppStyle {
         static let height = AppLayout.buttonHeight
         static let cornerRadius = 12.scaled
         static let font = Theme.Font.button
-    }
+    } 
     
     enum AuthTextField {
         static let height = AppLayout.inputHeight
@@ -37,6 +37,20 @@ enum AppStyle {
         static let cornerRadius = 12.scaled
         static let font = Theme.Font.input
         static let backgroundColor = Theme.Color.secondaryBackground.color
+    }
+    
+    enum BalanceCard {
+        static let cardHeight = 300.scaled
+        static let backgroudImageHeight = cardHeight * 0.6
+        
+        static let accountLabelTopOffset = 20.scaled
+        static let balanceLabelBottomOffset = -20.scaled
+        static let bottomPartOffset = 10.scaled
+        
+        static let detailsButtonSize = 40.scaled
+        
+        static let cardCornerRadius = 12.scaled
+        static let activityBadgeCornerRadius = 12.scaled
     }
     
 }

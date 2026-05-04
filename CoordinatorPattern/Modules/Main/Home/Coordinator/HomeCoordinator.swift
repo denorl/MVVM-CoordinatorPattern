@@ -30,9 +30,9 @@ final class HomeCoordinator: BaseCoordinator, HomeCoordinatorOutput {
     override func start() {
         let (viewModel, view) = factory.makeHomeScene()
         
-        viewModel.showCurrencyRatesDetais
+        viewModel.showAccountDetais
             .sink { [weak self] in
-                self?.performCurrencyRatesDetailsFlow()
+                self?.performAccountDetailsFlow()
             }
             .store(in: &cancellables)
         
@@ -47,8 +47,8 @@ final class HomeCoordinator: BaseCoordinator, HomeCoordinatorOutput {
 
 //MARK: - Flows Assembly
 private extension HomeCoordinator {
-    func performCurrencyRatesDetailsFlow() {
-        let (viewModel, view) = factory.makeCurrencyRatesDetailsScene()
+    func performAccountDetailsFlow() {
+        let (viewModel, view) = factory.makeAccountDetailsScene()
         
         bindFinish(from: viewModel) { [weak self] in
             self?.router.popModule(animated: true)

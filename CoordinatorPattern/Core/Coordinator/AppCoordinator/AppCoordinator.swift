@@ -96,7 +96,7 @@ private extension AppCoordinator {
         coordinator.start()
     }
     
-    func handleMainFlowFinish(_ finishReason: TabFlowFinishReason) {
+    func handleMainFlowFinish(_ finishReason: TabFlow.TabFlowFinishReason) {
         switch finishReason {
         case .signOut:
             self.session.end()

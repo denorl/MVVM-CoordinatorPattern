@@ -9,17 +9,13 @@ import UIKit
 import Combine
 
 protocol TabBarCoordinatorOutput {
-    var finishFlow: AnyPublisher<TabFlowFinishReason, Never> { get }
-}
-
-enum TabFlowFinishReason {
-    case signOut
+    var finishFlow: AnyPublisher<TabFlow.TabFlowFinishReason, Never> { get }
 }
 
 final class TabBarCoordinator: BaseCoordinator, TabBarCoordinatorOutput {
     
-    private let finishFlowSubject = PassthroughSubject<TabFlowFinishReason, Never>()
-    var finishFlow: AnyPublisher<TabFlowFinishReason, Never> {
+    private let finishFlowSubject = PassthroughSubject<TabFlow.TabFlowFinishReason, Never>()
+    var finishFlow: AnyPublisher<TabFlow.TabFlowFinishReason, Never> {
         finishFlowSubject.eraseToAnyPublisher()
     }
     
@@ -31,13 +27,12 @@ final class TabBarCoordinator: BaseCoordinator, TabBarCoordinatorOutput {
         self.factory = factory
     }
     
-    override func start() {
-        let tabBarController = UITabBarController()
+    override func start() {        
+        let tabBarController = MainTabBarController()
         
-        let tabs: [MainTab] = [.home, .profile, .settings]
-        let controllers = tabs.map { prepareTabFlow(for: $0) }
-        
-        tabBarController.viewControllers = controllers
+        let flows = MainTab.allCases.map { factory.makeTabFlow(for: $0) }
+        flows.forEach { performTabFlow($0) }
+        tabBarController.configure(with: flows)
         
         router.setRootModule(tabBarController, hideNavBar: true)
     }
@@ -46,47 +41,24 @@ final class TabBarCoordinator: BaseCoordinator, TabBarCoordinatorOutput {
 
 //MARK: - Private Methods
 private extension TabBarCoordinator {
-    func prepareTabFlow(for tab: MainTab) -> UIViewController {
-        let tabRouter = Router()
-        let coordinator: Coordinatable
+    
+    func performTabFlow(_ flow: TabFlow) {
+        addChildCoordinator(flow.coordinator)
+        flow.coordinator.start()
+        bindIfNeeded(flow.coordinator)
+    }
+    
+    func bindIfNeeded(_ coordinator: Coordinatable) {
         
-        switch tab {
-        case .home:
-            let homeCoordinator = factory.makeHomeCoordinator(router: tabRouter)
-            bindHomeFinish(homeCoordinator)
-            coordinator = homeCoordinator
-        case .profile:
-            coordinator = factory.makeProfileCoordinator(router: tabRouter)
-        case .settings:
-            let settingsCoordinator = factory.makeSettingsCoordinator(router: tabRouter)
-            bindSettingsFinish(settingsCoordinator)
-            coordinator = settingsCoordinator
+        if let settings = coordinator as? SettingsCoordinatorOutput {
+            settings.finishFlow
+                .first()
+                .sink { [weak self] in self?.finishFlowSubject.send(.signOut) }
+                .store(in: &cancellables)
         }
         
-        tabRouter.toPresent?.tabBarItem = tab.item
-        
-        addChildCoordinator(coordinator)
-        coordinator.start()
-        
-        return tabRouter.toPresent ?? UIViewController()
-        
     }
     
-    func bindHomeFinish(_ coordinator: HomeCoordinatorOutput) {
-        coordinator.finishFlow
-            .first()
-            .sink { [weak self] in
-
-            }
-            .store(in: &cancellables)
-    }
-    
-    func bindSettingsFinish(_ coordinator: SettingsCoordinatorOutput) {
-        coordinator.finishFlow
-            .first()
-            .sink { [weak self] in self?.finishFlowSubject.send(.signOut) }
-            .store(in: &cancellables)
-    }
 }
 
 

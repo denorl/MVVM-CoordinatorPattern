@@ -9,7 +9,7 @@ import UIKit
 
 protocol HomeFactoryProtocol {
     func makeHomeScene() -> (vm: HomeViewModel, vc: UIViewController)
-    func makeCurrencyRatesDetailsScene() -> (vm: CurrencyRatesViewModel, vc: UIViewController)
+    func makeAccountDetailsScene() -> (vm: AccountDetailsViewModel, vc: UIViewController)
 }
 
 extension ModulesFactory: HomeFactoryProtocol {
@@ -19,9 +19,9 @@ extension ModulesFactory: HomeFactoryProtocol {
         return (viewModel, view)
     }
     
-    func makeCurrencyRatesDetailsScene() -> (vm: CurrencyRatesViewModel, vc: UIViewController) {
-        let viewModel = CurrencyRatesViewModel()
-        let view = CurrencyRatesViewController(viewModel: viewModel)
+    func makeAccountDetailsScene() -> (vm: AccountDetailsViewModel, vc: UIViewController) {
+        let viewModel = AccountDetailsViewModel()
+        let view = AccountDetailsViewController(viewModel: viewModel)
         view.hidesBottomBarWhenPushed = true
         return (viewModel, view)
     }

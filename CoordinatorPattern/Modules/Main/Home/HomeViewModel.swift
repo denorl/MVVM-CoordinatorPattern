@@ -13,13 +13,13 @@ final class HomeViewModel {
     //MARK: - Finish home flow publisher
     private let finishHomeFlowSubject = PassthroughSubject<Void, Never>()
     
-    private let showCurrencyRatesDetaisSubject = PassthroughSubject<Void, Never>()
-    var showCurrencyRatesDetais: AnyPublisher<Void, Never> {
-        showCurrencyRatesDetaisSubject.eraseToAnyPublisher()
+    private let showAccountDetaisSubject = PassthroughSubject<Void, Never>()
+    var showAccountDetais: AnyPublisher<Void, Never> {
+        showAccountDetaisSubject.eraseToAnyPublisher()
     }
     
-    func currencyRatesTapped() {
-        showCurrencyRatesDetaisSubject.send()
+    func accountDetailsTapped() {
+        showAccountDetaisSubject.send()
     }
     
 }
